@@ -4,6 +4,8 @@ import com.example.journalApp.entities.JournalEntry;
 import com.example.journalApp.services.JournalEntryService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -26,16 +28,15 @@ public class JournalEntryControllerV2 {
     }
 
     @PostMapping
-    public boolean createEntry(@RequestBody JournalEntry journalEntry) {
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry journalEntry) {
         journalEntry.setDate(LocalDateTime.now());
-        journalEntryService.saveEntry(journalEntry);
-        return true;
+        return new ResponseEntity<>(journalEntryService.saveEntry(journalEntry),HttpStatus.CREATED);
     }
 
 
     @GetMapping("id/{id}")
-    public JournalEntry getJournalEntryById(@PathVariable("id") ObjectId id) {
-        return journalEntryService.findById(id);
+    public ResponseEntity<JournalEntry> getJournalEntryById(@PathVariable("id") ObjectId id) {
+        return new ResponseEntity<>( journalEntryService.findById(id),HttpStatus.OK);
     }
 
     @DeleteMapping("id/{id}")
